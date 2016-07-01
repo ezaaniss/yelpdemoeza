@@ -2,8 +2,7 @@ class ReviewsController < ApplicationController
   before_action :set_review, only: [:edit, :update, :destroy]
   before_action :set_restaurant
   before_action :authenticate_user!
-  
-
+  before_action :check_user, only: [:edit, :update, :destroy]
 
   # GET /reviews/new
   def new
@@ -23,7 +22,7 @@ class ReviewsController < ApplicationController
 
     respond_to do |format|
       if @review.save
-        format.html { redirect_to root_path, notice: 'Review was successfully created.' }
+        format.html { redirect_to @restaurant, notice: 'Review was successfully created.' }
         format.json { render :show, status: :created, location: @review }
       else
         format.html { render :new }
@@ -37,7 +36,7 @@ class ReviewsController < ApplicationController
   def update
     respond_to do |format|
       if @review.update(review_params)
-        format.html { redirect_to @review, notice: 'Review was successfully updated.' }
+        format.html { redirect_to restaurant_path(@restaurant), notice: 'Review was successfully updated.' }
         format.json { render :show, status: :ok, location: @review }
       else
         format.html { render :edit }
@@ -51,7 +50,7 @@ class ReviewsController < ApplicationController
   def destroy
     @review.destroy
     respond_to do |format|
-      format.html { redirect_to reviews_url, notice: 'Review was successfully destroyed.' }
+      format.html { redirect_to restaurant_path(@restaurant), notice: 'Review was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -63,7 +62,13 @@ class ReviewsController < ApplicationController
     end
 
     def set_restaurant
-       @restaurant = Restaurant.find(params[:restaurant_id])
+      @restaurant = Restaurant.find(params[:restaurant_id])
+    end
+
+    def check_user
+      unless (@review.user == current_user) || (current_user.admin?)
+        redirect_to root_url, alert: "Sorry, this review belongs to someone else"
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

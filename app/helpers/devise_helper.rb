@@ -18,4 +18,4 @@ module DeviseHelper
 
     html.html_safe
   end
-end 
+end
