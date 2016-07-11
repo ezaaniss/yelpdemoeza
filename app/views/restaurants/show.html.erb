@@ -1,7 +1,6 @@
 <div class="row">
-	<div class="col-md-3">
-
-<%= image_tag @restaurant.image_url %>
+    <div class="col-md-3">
+      <%= image_tag @restaurant.image_url %>
 
 <h2>
   <%= @restaurant.name %>
@@ -23,26 +22,30 @@
 </p>
 
 <%= link_to "Write a Review", new_restaurant_review_path(@restaurant), class: "btn btn-primary" %>
+    </div>
 
+  <div class="col-md-9">
+     <% if @reviews.blank? %>
+      <h3>No reviews yet. Be the first to write one!</h3>
+    <% else %>
+      <% @reviews.each do |review| %>
+      <div class="star-rating" data-score= <%= review.rating %> ></div>
+      <p><%= review.comment %></p>
+      <% end %>
+    <% end %>
+  </div>
 </div>
 
-<div class="col-md-9">
- <% if @reviews.blank? %>
- 	<h3>No reviews yet. Be the first to write one!</h3>
- <% else %> 
-	<% @reviews.each do |review| %>
-	<div class="star-rating"></div>
-	<p><%= review.comment %></p>
-<% end %>
- <% end %>
-</div>
-</div>
 
 <%= link_to 'Edit', edit_restaurant_path(@restaurant), class: "btn btn-link" %> |
 <%= link_to 'Back', restaurants_path, class: "btn btn-link" %>
 
 <script>
-$('.star-rating').raty({
-  path: '/Users/eza.aniss/Downloads/jquery/img/star'
-});
+  $('.star-rating').raty({
+    path: 'https://s3.amazonaws.com/yelpdemo/stars',
+    readOnly: true,
+    score: function() {
+      return $(this).attr('data-score');
+    }
+  });
 </script>
