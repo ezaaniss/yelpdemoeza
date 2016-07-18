@@ -15,6 +15,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem "mini_magick"
 gem 'devise'
+gem 'searchkick'
 group :development, :test do
   gem 'byebug'
 end
